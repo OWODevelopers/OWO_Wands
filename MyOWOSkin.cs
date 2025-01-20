@@ -7,7 +7,7 @@ using MelonLoader;
 
 namespace MyOWOTactsuit
 {
-    public class TactsuitVR
+    public class OWOSkin
     {
         /* A class that contains the basic functions for the OWO Tactsuit, like:
          * - A Heartbeat function that can be turned on/off
@@ -46,7 +46,7 @@ namespace MyOWOTactsuit
             }
         }
 
-        public TactsuitVR()
+        public OWOSkin()
         {
             LOG("Initializing suit");
             suitDisabled = false;
@@ -94,7 +94,7 @@ namespace MyOWOTactsuit
             systemInitialized = true;
         }
 
-        public void PlaybackHaptics(String key, float intensity = 1.0f, float duration = 1.0f)
+        public void Feel(String key, float intensity = 1.0f, float duration = 1.0f)
         {
             //LOG("Trying to play");
             if (FeedbackMap.ContainsKey(key))

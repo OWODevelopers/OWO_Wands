@@ -9,21 +9,21 @@ using MelonLoader;
 using HarmonyLib;
 using MyOWOTactsuit;
 
-[assembly: MelonInfo(typeof(Wands_OWO.Wands_OWO), "Wands_OWO", "2.0.0", "Florian Fahrenberger")]
+[assembly: MelonInfo(typeof(OWO_Wands.OWO_Wands), "OWO_Wands", "0.0.1", "OWO Game")]
 [assembly: MelonGame("Cortopia Studios", "Wands")]
 
-namespace Wands_OWO
+namespace OWO_Wands
 {
-    public class Wands_OWO : MelonMod
+    public class OWO_Wands : MelonMod
     {
-        public static TactsuitVR tactsuitVr;
+        public static OWOSkin owoSkin;
 
         public override void OnInitializeMelon()
         {
-            tactsuitVr = new TactsuitVR();
-            tactsuitVr.LOG("Initialize - SENSATION: HeartBeat");
+            owoSkin = new OWOSkin();
+            owoSkin.LOG("Initialize - SENSATION: HeartBeat");
 
-            tactsuitVr.PlaybackHaptics("HeartBeat");
+            owoSkin.Feel("HeartBeat");
         }
 
         #region Teleport and Health
@@ -34,9 +34,9 @@ namespace Wands_OWO
             [HarmonyPostfix]
             public static void Postfix()
             {
-                tactsuitVr.LOG("Teleport");
+                owoSkin.LOG("Teleport");
 
-                tactsuitVr.PlaybackHaptics("TeleportThrough");
+                owoSkin.Feel("TeleportThrough");
             }
         }
 
@@ -46,16 +46,16 @@ namespace Wands_OWO
             [HarmonyPostfix]
             public static void Postfix(Cortopia.Scripts.Player.PlayerControl __instance, float changeValue)
             {
-                tactsuitVr.LOG("UpdateHealth");
+                owoSkin.LOG("UpdateHealth");
 
 
                 if (changeValue > 0f)
                 {
-                    if (!tactsuitVr.IsPlaying("Healing")) tactsuitVr.PlaybackHaptics("Healing");
+                    if (!owoSkin.IsPlaying("Healing")) owoSkin.Feel("Healing");
                 }
-                if (__instance.Health == 0f) { tactsuitVr.StopHeartBeat(); return; }
-                if (__instance.Health <= 25f) tactsuitVr.StartHeartBeat();
-                else tactsuitVr.StopHeartBeat();
+                if (__instance.Health == 0f) { owoSkin.StopHeartBeat(); return; }
+                if (__instance.Health <= 25f) owoSkin.StartHeartBeat();
+                else owoSkin.StopHeartBeat();
             }
         }
 
@@ -65,11 +65,11 @@ namespace Wands_OWO
             [HarmonyPostfix]
             public static void Postfix(Cortopia.Scripts.Player.PlayerControl __instance, float changeValue)
             {
-                tactsuitVr.LOG("UpdateMana");
+                owoSkin.LOG("UpdateMana");
 
                 if (changeValue > 0f)
                 {
-                    if (!tactsuitVr.IsPlaying("Healing")) tactsuitVr.PlaybackHaptics("Healing");
+                    if (!owoSkin.IsPlaying("Healing")) owoSkin.Feel("Healing");
                 }
             }
         }
@@ -80,8 +80,8 @@ namespace Wands_OWO
             [HarmonyPostfix]
             public static void Postfix()
             {
-                tactsuitVr.StopThreads();
-                tactsuitVr.LOG("OnMatchEnded");
+                owoSkin.StopThreads();
+                owoSkin.LOG("OnMatchEnded");
             }
         }
 
@@ -91,8 +91,8 @@ namespace Wands_OWO
             [HarmonyPostfix]
             public static void Postfix()
             {
-                tactsuitVr.StopThreads();
-                tactsuitVr.LOG("OnMatchReset");
+                owoSkin.StopThreads();
+                owoSkin.LOG("OnMatchReset");
             }
         }
 
@@ -102,8 +102,8 @@ namespace Wands_OWO
             [HarmonyPostfix]
             public static void Postfix()
             {
-                tactsuitVr.StopThreads();
-                tactsuitVr.LOG("OnPlayerDisconnected");
+                owoSkin.StopThreads();
+                owoSkin.LOG("OnPlayerDisconnected");
             }
         }
 
@@ -127,8 +127,8 @@ namespace Wands_OWO
                 //tactsuitVr.LOG("Hit: " + correctedAngle.ToString());
                 if (correctedAngle > 360f) correctedAngle -= 360f;
                 if (correctedAngle < 0f) correctedAngle += 360f;
-                tactsuitVr.PlayBackHit("Impact", correctedAngle, 0f);
-                tactsuitVr.LOG("PlayBackHit Impact");
+                owoSkin.PlayBackHit("Impact", correctedAngle, 0f);
+                owoSkin.LOG("PlayBackHit Impact");
             }
         }
 
@@ -140,9 +140,9 @@ namespace Wands_OWO
             {
                 bool isRightHand = false;
                 if (wandHand == Assets.Scripts.Enums.WandHand.Right) isRightHand = true;
-                tactsuitVr.CastSpell("Fire", isRightHand);
-                tactsuitVr.LOG("CastSpell Fire");
-                tactsuitVr.LOG("spellSlotIndex - " + spellSlotIndex);
+                owoSkin.CastSpell("Fire", isRightHand);
+                owoSkin.LOG("CastSpell Fire");
+                owoSkin.LOG("spellSlotIndex - " + spellSlotIndex);
             }
         }
         #endregion
