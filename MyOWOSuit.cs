@@ -99,6 +99,7 @@ namespace MyOWOTactsuit
             //LOG("Trying to play");
             if (FeedbackMap.ContainsKey(key))
             {
+                LOG("SENSATION: " + key);
                 //LOG("ScaleOption");
                 //OWOLib.ScaleOption scaleOption = new OWOLib.ScaleOption(intensity, duration);
                 //LOG("Submit");
