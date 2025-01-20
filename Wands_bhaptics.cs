@@ -21,6 +21,8 @@ namespace Wands_OWO
         public override void OnInitializeMelon()
         {
             tactsuitVr = new TactsuitVR();
+            tactsuitVr.LOG("Initialize - SENSATION: HeartBeat");
+
             tactsuitVr.PlaybackHaptics("HeartBeat");
         }
 
@@ -32,6 +34,8 @@ namespace Wands_OWO
             [HarmonyPostfix]
             public static void Postfix()
             {
+                tactsuitVr.LOG("Teleport");
+
                 tactsuitVr.PlaybackHaptics("TeleportThrough");
             }
         }
@@ -42,6 +46,9 @@ namespace Wands_OWO
             [HarmonyPostfix]
             public static void Postfix(Cortopia.Scripts.Player.PlayerControl __instance, float changeValue)
             {
+                tactsuitVr.LOG("UpdateHealth");
+
+
                 if (changeValue > 0f)
                 {
                     if (!tactsuitVr.IsPlaying("Healing")) tactsuitVr.PlaybackHaptics("Healing");
@@ -58,6 +65,8 @@ namespace Wands_OWO
             [HarmonyPostfix]
             public static void Postfix(Cortopia.Scripts.Player.PlayerControl __instance, float changeValue)
             {
+                tactsuitVr.LOG("UpdateMana");
+
                 if (changeValue > 0f)
                 {
                     if (!tactsuitVr.IsPlaying("Healing")) tactsuitVr.PlaybackHaptics("Healing");
@@ -72,6 +81,7 @@ namespace Wands_OWO
             public static void Postfix()
             {
                 tactsuitVr.StopThreads();
+                tactsuitVr.LOG("OnMatchEnded");
             }
         }
 
@@ -82,6 +92,7 @@ namespace Wands_OWO
             public static void Postfix()
             {
                 tactsuitVr.StopThreads();
+                tactsuitVr.LOG("OnMatchReset");
             }
         }
 
@@ -92,6 +103,7 @@ namespace Wands_OWO
             public static void Postfix()
             {
                 tactsuitVr.StopThreads();
+                tactsuitVr.LOG("OnPlayerDisconnected");
             }
         }
 
@@ -116,6 +128,7 @@ namespace Wands_OWO
                 if (correctedAngle > 360f) correctedAngle -= 360f;
                 if (correctedAngle < 0f) correctedAngle += 360f;
                 tactsuitVr.PlayBackHit("Impact", correctedAngle, 0f);
+                tactsuitVr.LOG("PlayBackHit Impact");
             }
         }
 
@@ -128,6 +141,8 @@ namespace Wands_OWO
                 bool isRightHand = false;
                 if (wandHand == Assets.Scripts.Enums.WandHand.Right) isRightHand = true;
                 tactsuitVr.CastSpell("Fire", isRightHand);
+                tactsuitVr.LOG("CastSpell Fire");
+                tactsuitVr.LOG("spellSlotIndex - " + spellSlotIndex);
             }
         }
         #endregion

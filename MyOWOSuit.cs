@@ -114,6 +114,8 @@ namespace MyOWOTactsuit
 
         public void PlayBackHit(String key, float xzAngle, float yShift)
         {
+            LOG("PlayBackHit");
+
             // two parameters can be given to the pattern to move it on the vest:
             // 1. An angle in degrees [0, 360] to turn the pattern to the left
             // 2. A shift [-0.5, 0.5] in y-direction (up and down) to move it up or down
@@ -146,6 +148,8 @@ namespace MyOWOTactsuit
             //OWOLib.OWOManager.PlayRegistered(keyHands, keyHands, scaleOption, rotationFront);
             //OWOLib.OWOManager.PlayRegistered(keyArm, keyArm, scaleOption, rotationFront);
             //OWOLib.OWOManager.PlayRegistered(keyVest, keyVest, scaleOption, rotationFront);
+            LOG("Recoil");
+
         }
 
         public void CastSpell(string spellName, bool isRightHand, float intensity = 1.0f)
@@ -162,6 +166,8 @@ namespace MyOWOTactsuit
             //OWOLib.OWOManager.PlayRegistered(keyHand, keyHand, scaleOption, rotationFront);
             //OWOLib.OWOManager.PlayRegistered(keyArm, keyArm, scaleOption, rotationFront);
             //OWOLib.OWOManager.PlayRegistered(keyVest, keyVest, scaleOption, rotationFront);
+            LOG("CastSpell");
+
         }
 
         public void HeadShot(String key, float hitAngle)
@@ -176,6 +182,8 @@ namespace MyOWOTactsuit
             //}
             // If there is no Tactal, just forward to the vest  with angle and at the very top (0.5)
             // else { PlayBackHit(key, hitAngle, 0.5f); }
+            LOG("HeadShot");
+
         }
 
         public void StartHeartBeat()
@@ -210,6 +218,8 @@ namespace MyOWOTactsuit
 
         public void StopAllHapticFeedback()
         {
+            LOG("StopAllHapticFeedback");
+
             StopThreads();
             foreach (String key in FeedbackMap.Keys)
             {
