@@ -7,8 +7,8 @@
     <ProjectGuid>{8C59C4FF-3CCC-4AFE-B2CD-FBAF2EE75A0F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Wands_bhaptics</RootNamespace>
-    <AssemblyName>Wands_bhaptics</AssemblyName>
+    <RootNamespace>OWO_Wands</RootNamespace>
+    <AssemblyName>OWO_Wands</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
