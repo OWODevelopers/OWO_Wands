@@ -142,15 +142,6 @@ namespace MyOWOTactsuit
             else LOG("Feedback not registered: " + key);
         }
 
-        public void CastSpell(string spellName, bool isRightHand, float intensity = 1.0f)
-        {
-            string postfix = "_L";
-            if (isRightHand) { postfix = "_R"; }
-            string spell = $"Spell{spellName}{postfix}";
-
-            Feel(spell, 2);
-        }
-
         public void StartHeartBeat()
         {
             if (heartBeatIsActive) return;

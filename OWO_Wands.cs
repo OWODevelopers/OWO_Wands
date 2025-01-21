@@ -108,24 +108,8 @@ namespace OWO_Wands
         {
             [HarmonyPostfix]
             public static void Postfix(Cortopia.Scripts.Player.PlayerControl __instance, Assets.Scripts.Enums.DamageType damageType, float damage, Vector2 hitDirection)
-            {
-                // OWO starts in the front, then rotates to the left. 0° is front, 90° is left, 270° is right.
-                Vector2 frontFacing = new Vector2(1f, 1f);
-                float playerRotation = __instance.CameraTransform.rotation.eulerAngles.y;
-                float hitAngle = Vector2.SignedAngle(hitDirection, frontFacing);
-                float myAngle = hitAngle - playerRotation;
-                myAngle *= -1f;
-                float correctedAngle = 360f - myAngle;
-
-                if (correctedAngle > 360f) correctedAngle -= 360f;
-                if (correctedAngle < 0f) correctedAngle += 360f;                
-
-                if (correctedAngle == 0f) owoSkin.LOG("Damage from FRONT");
-                if (correctedAngle == 90f) owoSkin.LOG("Damage from LEFT");
-                if (correctedAngle == 270f) owoSkin.LOG("Damage from RIGHT");
-
+            {                           
                 owoSkin.Feel("Impact", 5);
-                owoSkin.LOG("PlayBackHit Impact");
             }
         }
 
@@ -137,9 +121,12 @@ namespace OWO_Wands
             {
                 bool isRightHand = false;
                 if (wandHand == Assets.Scripts.Enums.WandHand.Right) isRightHand = true;
-                owoSkin.CastSpell("Fire", isRightHand);
-                owoSkin.LOG("CastSpell Fire");
-                owoSkin.LOG("spellSlotIndex - " + spellSlotIndex);
+
+                string postfix = "_L";
+                if (isRightHand) { postfix = "_R"; }
+                string spell = $"SpellFire{postfix}";
+
+                owoSkin.Feel(spell, 2);
             }
         }
         #endregion
