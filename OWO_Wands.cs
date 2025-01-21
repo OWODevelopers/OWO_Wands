@@ -60,7 +60,7 @@ namespace OWO_Wands
             [HarmonyPostfix]
             public static void Postfix(Cortopia.Scripts.Player.PlayerControl __instance, float changeValue)
             {
-                owoSkin.LOG("UpdateMana");
+                //owoSkin.LOG("UpdateMana");
 
                 if (changeValue > 0f)
                 {
