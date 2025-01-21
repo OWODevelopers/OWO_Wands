@@ -69,7 +69,7 @@ namespace OWO_Wands
 
                 if (changeValue > 0f)
                 {
-                    if (!owoSkin.IsPlaying("Healing")) owoSkin.Feel("Healing");
+                    if (!owoSkin.IsPlaying("Healing")) owoSkin.Feel("Healing", 0);
                 }
             }
         }
@@ -80,8 +80,7 @@ namespace OWO_Wands
             [HarmonyPostfix]
             public static void Postfix()
             {
-                owoSkin.StopThreads();
-                owoSkin.LOG("OnMatchEnded");
+                owoSkin.StopAllHapticFeedback();
             }
         }
 
@@ -91,8 +90,7 @@ namespace OWO_Wands
             [HarmonyPostfix]
             public static void Postfix()
             {
-                owoSkin.StopThreads();
-                owoSkin.LOG("OnMatchReset");
+                owoSkin.StopAllHapticFeedback();
             }
         }
 
@@ -102,8 +100,7 @@ namespace OWO_Wands
             [HarmonyPostfix]
             public static void Postfix()
             {
-                owoSkin.StopThreads();
-                owoSkin.LOG("OnPlayerDisconnected");
+                owoSkin.StopAllHapticFeedback();
             }
         }
 

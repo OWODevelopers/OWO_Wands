@@ -254,22 +254,10 @@ namespace MyOWOTactsuit
 
         public void StopAllHapticFeedback()
         {
-            LOG("StopAllHapticFeedback");
-
-            StopThreads();
-            foreach (String key in FeedbackMap.Keys)
-            {
-                //  OWOLib.OWOManager.StopPlaying(key);
-            }
-        }
-
-        public void StopThreads()
-        {
-            // Yes, looks silly here, but if you have several threads like this, this is
-            // very useful when the player dies or starts a new level
             StopHeartBeat();
+            StopHeartBeatSlow();
+
+            OWO.Stop();
         }
-
-
     }
 }
