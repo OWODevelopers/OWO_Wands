@@ -46,7 +46,7 @@ namespace OWO_Wands
 
                 if (changeValue > 0f)
                 {
-                    if (!owoSkin.IsPlaying("Healing")) owoSkin.Feel("Healing");
+                    if (!owoSkin.IsPlaying("Healing")) owoSkin.Feel("Healing", 3);
                 }
                 if (__instance.Health == 0f) { owoSkin.StopHeartBeat(); return; }
                 if (__instance.Health <= 25f) owoSkin.StartHeartBeat();
