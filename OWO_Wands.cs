@@ -46,7 +46,7 @@ namespace OWO_Wands
 
                 if (changeValue > 0f)
                 {
-                    if (!owoSkin.IsPlaying("Healing")) owoSkin.Feel("Healing", 3);
+                    owoSkin.Feel("Healing", 2);
                 }
                 if (__instance.Health == 0f) { owoSkin.StopHeartBeat(); return; }
                 if (__instance.Health <= 25f) owoSkin.StartHeartBeat();
@@ -54,20 +54,20 @@ namespace OWO_Wands
             }
         }
 
-        [HarmonyPatch(typeof(Cortopia.Scripts.Player.PlayerControl), "UpdateMana", new Type[] { typeof(float) })]
-        public class OWO_UpdateMana
-        {
-            [HarmonyPostfix]
-            public static void Postfix(Cortopia.Scripts.Player.PlayerControl __instance, float changeValue)
-            {
-                //owoSkin.LOG("UpdateMana");
+        //[HarmonyPatch(typeof(Cortopia.Scripts.Player.PlayerControl), "UpdateMana", new Type[] { typeof(float) })]
+        //public class OWO_UpdateMana
+        //{
+        //    [HarmonyPostfix]
+        //    public static void Postfix(Cortopia.Scripts.Player.PlayerControl __instance, float changeValue)
+        //    {
+        //        //owoSkin.LOG("UpdateMana");
 
-                if (changeValue > 0f)
-                {
-                    if (!owoSkin.IsPlaying("Healing")) owoSkin.Feel("Healing", 0);
-                }
-            }
-        }
+        //        if (changeValue > 0f)
+        //        {
+        //            owoSkin.Feel("Healing", 0);
+        //        }
+        //    }
+        //}
 
         [HarmonyPatch(typeof(Cortopia.Scripts.Player.PlayerControl), "OnMatchEnded", new Type[] { typeof(CortopiaEvents.Events.MatchEndedEvent) })]
         public class OWO_MatchEnded
@@ -109,7 +109,7 @@ namespace OWO_Wands
             [HarmonyPostfix]
             public static void Postfix(Cortopia.Scripts.Player.PlayerControl __instance, Assets.Scripts.Enums.DamageType damageType, float damage, Vector2 hitDirection)
             {                           
-                owoSkin.Feel("Impact", 5);
+                owoSkin.Feel("Impact", 4);
             }
         }
 
@@ -126,7 +126,7 @@ namespace OWO_Wands
                 if (isRightHand) { postfix = "_R"; }
                 string spell = $"SpellFire{postfix}";
 
-                owoSkin.Feel(spell, 2);
+                owoSkin.Feel(spell, 3);
             }
         }
         #endregion

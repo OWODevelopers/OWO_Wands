@@ -170,11 +170,6 @@ namespace MyOWOTactsuit
             slowHeartBeatIsActive = false;
         }
 
-        public bool IsPlaying(String effect)
-        {
-            return false;
-        }
-
         public void StopAllHapticFeedback()
         {
             StopHeartBeat();
