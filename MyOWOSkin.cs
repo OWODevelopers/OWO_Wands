@@ -41,7 +41,7 @@ namespace MyOWOTactsuit
                 suitDisabled = false;
                 LOG("OWO suit connected.");
 
-                Feel("HeartBeat", 0);
+                Feel("TeleportThrough", 0);
             }
             if (suitDisabled) LOG("OWO is not enabled?!?!");
         }
