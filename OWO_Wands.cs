@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using UnityEngine;
 using MelonLoader;
 using HarmonyLib;
@@ -23,7 +18,7 @@ namespace OWO_Wands
             owoSkin = new OWOSkin();
             owoSkin.LOG("Initialize - SENSATION: HeartBeat");
 
-            owoSkin.Feel("HeartBeat");
+            owoSkin.Feel("HeartBeat", 0);
         }
 
         #region Teleport and Health
@@ -36,7 +31,7 @@ namespace OWO_Wands
             {
                 owoSkin.LOG("Teleport");
 
-                owoSkin.Feel("TeleportThrough");
+                owoSkin.Feel("TeleportThrough", 3);
             }
         }
 
@@ -121,10 +116,15 @@ namespace OWO_Wands
                 float myAngle = hitAngle - playerRotation;
                 myAngle *= -1f;
                 float correctedAngle = 360f - myAngle;
-                //tactsuitVr.LOG("Hit: " + correctedAngle.ToString());
+
                 if (correctedAngle > 360f) correctedAngle -= 360f;
-                if (correctedAngle < 0f) correctedAngle += 360f;
-                owoSkin.PlayBackHit("Impact", correctedAngle, 0f);
+                if (correctedAngle < 0f) correctedAngle += 360f;                
+
+                if (correctedAngle == 0f) owoSkin.LOG("Damage from FRONT");
+                if (correctedAngle == 90f) owoSkin.LOG("Damage from LEFT");
+                if (correctedAngle == 270f) owoSkin.LOG("Damage from RIGHT");
+
+                owoSkin.Feel("Impact", 5);
                 owoSkin.LOG("PlayBackHit Impact");
             }
         }
