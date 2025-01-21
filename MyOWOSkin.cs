@@ -1,115 +1,149 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using MelonLoader;
+using OWOGame;
 
 namespace MyOWOTactsuit
 {
     public class OWOSkin
-    {
-        /* A class that contains the basic functions for the OWO Tactsuit, like:
-         * - A Heartbeat function that can be turned on/off
-         * - A function to read in and register all .tact patterns in the OWO subfolder
-         * - A logging hook to output to the Melonloader log
-         * - 
-         * */
+    {       
         public bool suitDisabled = true;
-        public bool systemInitialized = false;
-        // Event to start and stop the heartbeat thread
-        private static ManualResetEvent HeartBeat_mrse = new ManualResetEvent(false);
-        private static ManualResetEvent SlowHeartBeat_mrse = new ManualResetEvent(false);
-        // dictionary of all feedback patterns found in the OWO directory
-        public Dictionary<String, FileInfo> FeedbackMap = new Dictionary<String, FileInfo>();
+        public bool systemInitialized = false;        
+        private static bool heartBeatIsActive = false;
+        private static bool slowHeartBeatIsActive = false;        
+        public Dictionary<String, Sensation> FeedbackMap = new Dictionary<String, Sensation>();
 
         //private static OWOLib.RotationOption defaultRotationOption = new OWOLib.RotationOption(0.0f, 0.0f);
 
-        public void HeartBeatFunc()
-        {
-            while (true)
-            {
-                // Check if reset event is active
-                HeartBeat_mrse.WaitOne();
-                //OWOLib.OWOManager.PlayRegistered("HeartBeat");
-                Thread.Sleep(600);
-            }
-        }
-        public void SlowHeartBeatFunc()
-        {
-            while (true)
-            {
-                // Check if reset event is active
-                SlowHeartBeat_mrse.WaitOne();
-                //OWOLib.OWOManager.PlayRegistered("HeartBeatSlow");
-                Thread.Sleep(1000);
-            }
-        }
-
         public OWOSkin()
         {
-            LOG("Initializing suit");
-            suitDisabled = false;
-            RegisterAllTactFiles();
-            LOG("Starting HeartBeat thread...");
-            Thread HeartBeatThread = new Thread(HeartBeatFunc);
-            HeartBeatThread.Start();
-            Thread SlowHeartBeatThread = new Thread(SlowHeartBeatFunc);
-            SlowHeartBeatThread.Start();
+            RegisterAllSensationsFiles();
+            InitializeOWO();
+        }
+
+        private async void InitializeOWO()
+        {
+            LOG("Initializing OWO skin");
+
+            var gameAuth = GameAuth.Create(AllBakedSensations()).WithId("42425328");
+
+            OWO.Configure(gameAuth);
+            string[] myIPs = getIPsFromFile("OWO_Manual_IP.txt");
+            if (myIPs.Length == 0) await OWO.AutoConnect();
+            else
+            {
+                await OWO.Connect(myIPs);
+            }
+
+            if (OWO.ConnectionState == ConnectionState.Connected)
+            {
+                suitDisabled = false;
+                LOG("OWO suit connected.");
+            }
+            if (suitDisabled) LOG("OWO is not enabled?!?!");
+        }
+
+        public BakedSensation[] AllBakedSensations()
+        {
+            var result = new List<BakedSensation>();
+
+            foreach (var sensation in FeedbackMap.Values)
+            {
+                if (sensation is BakedSensation baked)
+                {
+                    LOG("Registered baked sensation: " + baked.name);
+                    result.Add(baked);
+                }
+                else
+                {
+                    LOG("Sensation not baked? " + sensation);
+                    continue;
+                }
+            }
+            return result.ToArray();
+        }
+
+        public string[] getIPsFromFile(string filename)
+        {
+            List<string> ips = new List<string>();
+            string filePath = Directory.GetCurrentDirectory() + "\\Mods\\" + filename;
+            if (File.Exists(filePath))
+            {
+                LOG("Manual IP file found: " + filePath);
+                var lines = File.ReadLines(filePath);
+                foreach (var line in lines)
+                {
+                    IPAddress address;
+                    if (IPAddress.TryParse(line, out address)) ips.Add(line);
+                    else LOG("IP not valid? ---" + line + "---");
+                }
+            }
+            return ips.ToArray();
+        }
+
+
+        public async Task HeartBeatFuncAsync()
+        {           
+                while (heartBeatIsActive)
+                {
+                    Feel("HeartBeat", 0);
+                    await Task.Delay(600);
+                }            
+        }
+
+        public async Task SlowHeartBeatFuncAsync()
+        {
+            while (slowHeartBeatIsActive)
+            {
+                Feel("HeartBeat", 0);
+                await Task.Delay(1000);
+            }
         }
 
         public void LOG(string logStr)
         {
-#pragma warning disable CS0618 // remove warning that the logger is deprecated
+            #pragma warning disable CS0618 // remove warning that the logger is deprecated
             MelonLogger.Msg(logStr);
-#pragma warning restore CS0618
+            #pragma warning restore CS0618
         }
 
-
-
-        void RegisterAllTactFiles()
+        void RegisterAllSensationsFiles()
         {
-            // Get location of the compiled assembly and search through "OWO" directory and contained patterns
             string configPath = Directory.GetCurrentDirectory() + "\\Mods\\OWO";
             DirectoryInfo d = new DirectoryInfo(configPath);
-            FileInfo[] Files = d.GetFiles("*.tact", SearchOption.AllDirectories);
+            FileInfo[] Files = d.GetFiles("*.owo", SearchOption.AllDirectories);
             for (int i = 0; i < Files.Length; i++)
             {
                 string filename = Files[i].Name;
                 string fullName = Files[i].FullName;
                 string prefix = Path.GetFileNameWithoutExtension(filename);
-                // LOG("Trying to register: " + prefix + " " + fullName);
                 if (filename == "." || filename == "..")
                     continue;
                 string tactFileStr = File.ReadAllText(fullName);
                 try
                 {
-                    //OWOLib.OWOManager.RegisterPatternFromJson(prefix, tactFileStr);
-                    LOG("Pattern registered: " + prefix);
+                    Sensation test = Sensation.Parse(tactFileStr);
+                    FeedbackMap.Add(prefix, test);
                 }
                 catch (Exception e) { LOG(e.ToString()); }
-
-                FeedbackMap.Add(prefix, Files[i]);
             }
+
             systemInitialized = true;
         }
 
-        public void Feel(String key, float intensity = 1.0f, float duration = 1.0f)
+        public void Feel(String key, int Priority, float intensity = 1.0f, float duration = 1.0f)
         {
-            //LOG("Trying to play");
             if (FeedbackMap.ContainsKey(key))
             {
+                OWO.Send(FeedbackMap[key].WithPriority(Priority));
                 LOG("SENSATION: " + key);
-                //LOG("ScaleOption");
-                //OWOLib.ScaleOption scaleOption = new OWOLib.ScaleOption(intensity, duration);
-                //LOG("Submit");
-                //OWOLib.OWOManager.PlayRegistered(key, key, scaleOption, defaultRotationOption);
-                // LOG("Playing back: " + key);
             }
-            else
-            {
-                LOG("Feedback not registered: " + key);
-            }
+            else LOG("Feedback not registered: " + key);
         }
 
         public void PlayBackHit(String key, float xzAngle, float yShift)
@@ -126,10 +160,6 @@ namespace MyOWOTactsuit
 
         public void Recoil(string weaponName, bool isRightHand, float intensity = 1.0f)
         {
-            // weaponName is a parameter that will go into the vest feedback pattern name
-            // isRightHand is just which side the feedback is on
-            // intensity should usually be between 0 and 1
-
             float duration = 1.0f;
             //var scaleOption = new OWOLib.ScaleOption(intensity, duration);
             // the function needs some rotation if you want to give the scale option as well
@@ -188,27 +218,33 @@ namespace MyOWOTactsuit
 
         public void StartHeartBeat()
         {
-            HeartBeat_mrse.Set();
+            if (heartBeatIsActive) return;
+
+            heartBeatIsActive = true;
+            _ = HeartBeatFuncAsync();
         }
 
         public void StopHeartBeat()
         {
-            HeartBeat_mrse.Reset();
+            heartBeatIsActive = false;
         }
+
         public void StartHeartBeatSlow()
         {
-            SlowHeartBeat_mrse.Set();
+            if (slowHeartBeatIsActive) return;
+
+            slowHeartBeatIsActive = true;
+            _ = SlowHeartBeatFuncAsync();
         }
 
         public void StopHeartBeatSlow()
         {
-            SlowHeartBeat_mrse.Reset();
+            slowHeartBeatIsActive = false;
         }
 
         public bool IsPlaying(String effect)
         {
             return false;
-            //return OWOLib.OWOManager.IsPlaying(effect);
         }
 
         public void StopHapticFeedback(String effect)
