@@ -9,7 +9,11 @@ That's it. Start your OWO app in the same network, connect to the OWO skin, and 
 Note: compatible with MelonLoader version 0.6.0-ci.-1
 
 ## Featured effects
-TBA
+- Healing
+- HeartBeat
+- Impact
+- SpellFire
+- TeleportThrough
 
 ## Manual Connection
-If you are having trouble with the automatic connection, create a .txt file called OWO_Manual_IP.txt and write the IP of where you are executing the OWO App.
+If you are having trouble with the automatic connection, create a .txt file called OWO_Manual_IP.txt and write the IP of where you placed the OWO mod.
